@@ -1,66 +1,274 @@
-# bsrp-jobs
+# 💼 BSRP Jobs
 
-Gameplay scripts for **every job** defined in `bsrp/config_jobs.lua` (except full LEO/EMS toolkits, which live in `bsrp-policejob` / `bsrp-ambulancejob`).
+A modern job management system built exclusively for the **BSRP Framework**.
 
-Inspired by the qbcore-framework job suite (`qb-taxijob`, `qb-towjob`, `qb-garbagejob`, `qb-busjob`, `qb-mechanicjob`, food jobs, etc.) — rebuilt for **BSRP**, **ox_*** stack, and the futuristic theme.
+BSRP Jobs provides a complete employment system allowing players to interact with different careers, manage job assignments, and participate in roleplay activities while integrating directly with the BSRP ecosystem. Designed for flexibility, performance, and easy expansion, it serves as the foundation for civilian and professional jobs across BSRP resources.
 
-## Dependencies
+---
 
+## Features
+
+* 💼 Job management system
+* 👷 Multiple job support
+* 📋 Job assignment handling
+* 🔄 Job switching support
+* 💰 Job payment integration
+* 🏢 Employer system support
+* 👤 Player job data management
+* ⚡ Optimized performance
+* 🔗 Full BSRP Framework integration
+
+---
+
+## Framework Requirements
+
+This resource requires:
+
+* BSRP Framework
+* oxmysql
+* ox_lib
+
+Recommended:
+
+* ox_inventory
+* bsrp-characters
+* bsrp-banking
+* bsrp-phone
+* bsrp-dispatch
+
+---
+
+## Installation
+
+### 1. Place Resource
+
+```text
+resources/
+└── bsrp-jobs/
 ```
-ox_lib
-ox_target
-ox_inventory
-bsrp
-```
 
-## server.cfg
+### 2. Ensure Dependencies
 
 ```cfg
+ensure oxmysql
 ensure ox_lib
-ensure ox_target
-ensure ox_inventory
+
 ensure bsrp
 ensure bsrp-jobs
-# optional specialized:
-ensure bsrp-policejob
-ensure bsrp-ambulancejob
-ensure ps-multijob
 ```
 
-## Controls
+> BSRP Jobs must start after the `bsrp` core resource.
 
-| Input | Action |
-|-------|--------|
-| **F5** / `/jobsmenu` | Job actions for your current job |
-| **E** at stop markers | Complete route stops |
-| ox_target at workplaces | Duty, garage, kitchen, locker |
+---
 
-## Job types
+## Database
 
-| Type | Jobs | Gameplay |
-|------|------|----------|
-| **route** | taxi, bus, garbage, trucker, delivery, recycle, vineyard, oilwell, airport, whitewidow | Start run → visit stops → pay |
-| **mechanic** | mechanic | Repair / clean / flip vehicles |
-| **tow** | tow | Hook vehicle on flatbed → yard dropoff |
-| **hunter** | hunter | Spawn animals in zone → skin for pay |
-| **food** | burgershot, taco, beanmachine, pizzathis, uwu, upnatoms, mesanuxta, tequilala, hotdog | Kitchen craft + counter serve |
-| **workplace** | casino, vanilla, dealerships, realestate, reporter, dj, legal, LEO depts, fire, racerx | Duty, garage, timed work pay |
+Import the provided SQL file if included:
 
-## LEO / EMS
+```sql
+sql/bsrp-jobs.sql
+```
 
-- **police** / **ambulance** full scripts: `bsrp-policejob`, `bsrp-ambulancejob`
-- Other LEO (`fib`, `bcso`, `sasp`, …): duty + garage here; interactions/cuff via policejob if job is LEO type
+If automatic database initialization is enabled, required tables will be created automatically.
 
-## Config
+---
 
-Edit `config/jobs.lua`:
+## Configuration
 
-- Locations (duty, garage, stops, kitchen)
-- Vehicles, pay ranges, progress times
-- Food craft recipes (ox_inventory item names)
+Configuration options can be found in:
 
-## Notes
+```text
+config.lua
+```
 
-- Pay goes to **cash** via `bsrp` with grade bonus
-- Food craft needs items defined in ox_inventory (`burger`, `water`, etc. — add `taco` if missing)
-- Coords are sensible defaults; tweak per map / MLO
+Available settings may include:
+
+* Available jobs
+* Job grades
+* Salary settings
+* Job permissions
+* Boss permissions
+* Work locations
+* Job vehicles
+* Job restrictions
+
+---
+
+## Job System
+
+### Job Management
+
+Players can:
+
+* View available jobs
+* Receive job assignments
+* Change employment
+* Manage job information
+* Access job-specific features
+
+---
+
+### Job Grades
+
+Supports:
+
+* Multiple ranks
+* Different permissions
+* Salary levels
+* Job hierarchy
+* Employee management
+
+---
+
+### Employment Features
+
+Jobs can include:
+
+* Civilian careers
+* Government jobs
+* Emergency services
+* Business roles
+* Custom server occupations
+
+---
+
+## Job Data
+
+Each character stores:
+
+* Job Name
+* Job Grade
+* Duty Status
+* Employment Information
+* Payment Information
+* Employer Data
+
+---
+
+## Framework Integration
+
+### Get Player
+
+```lua
+local player = exports.bsrp:GetPlayer(source)
+
+if player then
+    print(player.PlayerData.citizenid)
+end
+```
+
+---
+
+### Check Player Job
+
+```lua
+if player.PlayerData.job.name == "jobname" then
+    -- Job actions
+end
+```
+
+---
+
+### Get Job Grade
+
+```lua
+local grade = player.PlayerData.job.grade.level
+```
+
+---
+
+## Job Events
+
+Example usage:
+
+```lua
+RegisterNetEvent('bsrp:jobChanged', function(job)
+    print('New job:', job)
+end)
+```
+
+```lua
+RegisterNetEvent('bsrp:dutyChanged', function(state)
+    print('Duty status:', state)
+end)
+```
+
+> Event names may vary depending on implementation.
+
+---
+
+## Permissions
+
+Administrative job actions can utilize the BSRP permission system:
+
+```lua
+if exports.bsrp:IsAdmin(source, 2) then
+    -- Job administration actions
+end
+```
+
+---
+
+## Compatibility
+
+| Resource          | Supported |
+| ----------------- | --------- |
+| BSRP Framework    | ✅         |
+| oxmysql           | ✅         |
+| ox_lib            | ✅         |
+| ox_inventory      | ✅         |
+| bsrp-characters   | ✅         |
+| bsrp-banking      | ✅         |
+| bsrp-phone        | ✅         |
+| bsrp-dispatch     | ✅         |
+
+---
+
+## Job Lifecycle
+
+### Player Joins
+
+1. Player connects to the server
+2. Character data loads
+3. Job information is retrieved
+4. Employment systems become available
+
+---
+
+### Job Selection
+
+1. Player receives or selects a job
+2. Job permissions are loaded
+3. Grade information is assigned
+4. Job features become available
+
+---
+
+### Job Updates
+
+Job information is saved during:
+
+* Job changes
+* Grade promotions
+* Duty changes
+* Character switching
+* Player logout
+* Server restart
+
+---
+
+## Development
+
+When creating resources that depend on job data:
+
+```lua
+local player = exports.bsrp:GetPlayer(source)
+
+if not player then
+    return
+end
+
+local job = player.PlayerData.job.name
+```
+
+Always verify player permissions and job information server-side before processing job-related actions.
